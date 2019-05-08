@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import { Form, Segment, Button } from 'semantic-ui-react';
 
+// const emptyEvent = {
+//   title: '',
+//   date: '',
+//   city: '',
+//   venue: '',
+//   hostedBy: ''
+// }
+
 class EventForm extends Component {
   state = {
     title: '',
@@ -10,12 +18,24 @@ class EventForm extends Component {
     hostedBy: ''
   };
 
+  componentDidMount() {
+    if (this.props.selectedEvent !== null) {
+      this.setState({
+        ...this.props.selectedEvent
+      })
+    } 
+  }
+
   handleFormSubmit = () => {
-    this.props.onFormSubmit(this.state)
+    if (this.state.id) {
+      this.props.updateEvent(this.state)
+    } else {
+      this.props.createEvent(this.state)
+    }
   };
 
   handleInputChange = name => ({ target: { value } }) =>
-    this.setState({ [name]: value });
+    this.setState({[name]: value });
 
   render() {
     const { cancelFormOpen } = this.props;
