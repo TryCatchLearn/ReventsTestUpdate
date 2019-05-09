@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { reduxForm, Field } from 'redux-form';
 import {geocodeByAddress, getLatLng} from 'react-places-autocomplete';
-import {format} from 'date-fns';
 import {
   composeValidators,
   combineValidators,
