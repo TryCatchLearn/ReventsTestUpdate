@@ -5,11 +5,14 @@
   "dependencies": {
     "cuid": "^2.1.6",
     "react": "^16.8.6",
+    "react-datepicker": "^2.5.0",
     "react-dom": "^16.8.6",
     "react-redux": "^7.0.3",
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.0",
     "redux": "^4.0.1",
+    "redux-form": "^8.2.0",
+    "revalidate": "^1.2.0",
     "semantic-ui-react": "^0.87.1"
   },
   "scripts": {
