@@ -1,45 +1,65 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
 import { Form, Segment, Button } from 'semantic-ui-react';
+import {createEvent, updateEvent} from '../eventActions';
+import cuid from 'cuid';
 
-// const emptyEvent = {
-//   title: '',
-//   date: '',
-//   city: '',
-//   venue: '',
-//   hostedBy: ''
-// }
+const mapState = (state, ownProps) => {
+  const eventId = ownProps.match.params.id;
 
-class EventForm extends Component {
-  state = {
+  let event = {
     title: '',
     date: '',
     city: '',
     venue: '',
     hostedBy: ''
-  };
-
-  componentDidMount() {
-    if (this.props.selectedEvent !== null) {
-      this.setState({
-        ...this.props.selectedEvent
-      })
-    } 
   }
 
+  if (eventId && state.events.length > 0) {
+    event = state.events.filter(event => event.id === eventId)[0]
+  }
+
+  return {
+    event
+  }
+}
+
+const actions = {
+  createEvent,
+  updateEvent
+}
+
+class EventForm extends Component {
+  state = {
+    event: Object.assign({}, this.props.event)
+  };
+
   handleFormSubmit = () => {
-    if (this.state.id) {
-      this.props.updateEvent(this.state)
+    if (this.state.event.id) {
+      this.props.updateEvent(this.state.event)
+      this.props.history.goBack()
     } else {
-      this.props.createEvent(this.state)
+      const newEvent = {
+        ...this.state.event,
+        id: cuid(),
+        hostPhotoURL: '/assets/user.png'
+      }
+      this.props.createEvent(newEvent);
+      this.props.history.push('/events')
     }
   };
 
-  handleInputChange = name => ({ target: { value } }) =>
-    this.setState({[name]: value });
+  handleInputChange = (evt)=> {
+    const newEvent = this.state.event;
+    newEvent[evt.target.name] = evt.target.value;
+    this.setState({
+      event: newEvent
+    });
+  }
+
 
   render() {
-    const { cancelFormOpen } = this.props;
-    const { title, date, city, venue, hostedBy } = this.state;
+    const { title, date, city, venue, hostedBy } = this.state.event;
     return (
       <Segment>
         <Form onSubmit={this.handleFormSubmit}>
@@ -48,7 +68,7 @@ class EventForm extends Component {
             <input
               name='title'
               value={title}
-              onChange={this.handleInputChange('title')}
+              onChange={this.handleInputChange}
               placeholder='Event Title'
             />
           </Form.Field>
@@ -57,7 +77,7 @@ class EventForm extends Component {
             <input
               name='date'
               value={date}
-              onChange={this.handleInputChange('date')}
+              onChange={this.handleInputChange}
               type='date'
               placeholder='Event Date'
             />
@@ -67,7 +87,7 @@ class EventForm extends Component {
             <input
               name='city'
               value={city}
-              onChange={this.handleInputChange('city')}
+              onChange={this.handleInputChange}
               placeholder='City event is taking place'
             />
           </Form.Field>
@@ -76,7 +96,7 @@ class EventForm extends Component {
             <input
               name='venue'
               value={venue}
-              onChange={this.handleInputChange('venue')}
+              onChange={this.handleInputChange}
               placeholder='Enter the Venue of the event'
             />
           </Form.Field>
@@ -85,14 +105,14 @@ class EventForm extends Component {
             <input
               name='hostedBy'
               value={hostedBy}
-              onChange={this.handleInputChange('hostedBy')}
+              onChange={this.handleInputChange}
               placeholder='Enter the name of person hosting'
             />
           </Form.Field>
           <Button positive type='submit'>
             Submit
           </Button>
-          <Button onClick={cancelFormOpen} type='button'>
+          <Button onClick={this.props.history.goBack} type='button'>
             Cancel
           </Button>
         </Form>
@@ -101,4 +121,4 @@ class EventForm extends Component {
   }
 }
 
-export default EventForm;
+export default connect(mapState, actions)(EventForm);
