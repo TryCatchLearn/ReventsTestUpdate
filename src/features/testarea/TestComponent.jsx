@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import {connect} from 'react-redux';
 import {incrementCounter, decrementCounter} from './testActions';
 import { Button } from 'semantic-ui-react';
+import TestPlaceInput from './TestPlaceInput';
+import SimpleMap from './SimpleMap';
 
 const mapState = (state) => ({
     data: state.test.data
@@ -21,6 +23,9 @@ class TestComponent extends Component {
         <h3>The answer is: {data}</h3>
         <Button onClick={incrementCounter} color='green' content='Increment' />
         <Button onClick={decrementCounter} color='red' content='Decrement' />
+        <TestPlaceInput />
+        <br/>
+        <SimpleMap />
       </div>
     )
   }

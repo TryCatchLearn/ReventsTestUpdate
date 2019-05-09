@@ -1,6 +1,8 @@
+/*global google*/
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { reduxForm, Field } from 'redux-form';
+import {geocodeByAddress, getLatLng} from 'react-places-autocomplete';
 import {format} from 'date-fns';
 import {
   composeValidators,
@@ -15,6 +17,7 @@ import TextInput from '../../../app/common/form/TextInput';
 import TextArea from '../../../app/common/form/TextArea';
 import SelectInput from '../../../app/common/form/SelectInput';
 import DateInput from '../../../app/common/form/DateInput';
+import PlaceInput from '../../../app/common/form/PlaceInput';
 
 const mapState = (state, ownProps) => {
   const eventId = ownProps.match.params.id;
@@ -56,8 +59,40 @@ const category = [
 ];
 
 class EventForm extends Component {
+  state = {
+    cityLatLng: {},
+    venueLatLng: {}
+  }
+
+  handleCitySelect = (selectedCity) => {
+    geocodeByAddress(selectedCity)
+      .then(results => getLatLng(results[0]))
+      .then(latlng => {
+        this.setState({
+          cityLatLng: latlng
+        })
+      })
+      .then(() => {
+        this.props.change('city', selectedCity)
+      })
+  }
+
+  handleVenueSelect = (selectedVenue) => {
+    geocodeByAddress(selectedVenue)
+      .then(results => getLatLng(results[0]))
+      .then(latlng => {
+        this.setState({
+          venueLatLng: latlng
+        })
+      })
+      .then(() => {
+        this.props.change('venue', selectedVenue)
+      })
+  }
+
   handleFormSubmit = values => {
     values.date = new Date(values.date).toISOString();
+    values.venueLatLng = this.state.venueLatLng;
     if (this.props.initialValues.id) {
       this.props.updateEvent(values);
       this.props.history.goBack();
@@ -105,14 +140,22 @@ class EventForm extends Component {
               <Field
                 name='city'
                 type='text'
-                component={TextInput}
+                component={PlaceInput}
+                options={{typs: ['(cities)']}}
                 placeholder='Event city'
+                onSelect={this.handleCitySelect}
               />
               <Field
                 name='venue'
                 type='text'
-                component={TextInput}
+                component={PlaceInput}
+                options={{
+                  location: new google.maps.LatLng(this.state.cityLatLng),
+                  radius: 1000,
+                  types: ['establishment']
+                }}
                 placeholder='Event venue'
+                onSelect={this.handleVenueSelect}
               />
               <Field
                 name='date'
