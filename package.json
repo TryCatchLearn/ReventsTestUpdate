@@ -14,6 +14,7 @@
     "react-scripts": "3.0.0",
     "redux": "^4.0.1",
     "redux-form": "^8.2.0",
+    "redux-thunk": "^2.3.0",
     "revalidate": "^1.2.0",
     "semantic-ui-react": "^0.87.1"
   },
