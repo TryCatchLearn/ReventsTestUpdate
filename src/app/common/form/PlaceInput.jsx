@@ -2,35 +2,6 @@ import React, { Component } from 'react';
 import PlacesAutoComplete from 'react-places-autocomplete';
 import { Form, List, Segment, Label } from 'semantic-ui-react';
 
-// const renderFunc = ({
-//   getInputProps,
-//   getSuggestionItemProps,
-//   suggestions,
-//   loading,
-//   placeholder
-// }) => (
-//   <div>
-//     <input {...getInputProps({ placeholder: placeholder })} />
-//     {suggestions.length > 0 && (
-//       <Segment className='autocomplete-dropdown-container'>
-//         {loading && <div>Loading...</div>}
-//         <List selection>
-//           {suggestions.map(suggestion => (
-//             <List.Item {...getSuggestionItemProps(suggestion)}>
-//               <List.Header>
-//                 {suggestion.formattedSuggestion.mainText}
-//               </List.Header>
-//               <List.Description>
-//                 {suggestion.formattedSuggestion.secondaryText}
-//               </List.Description>
-//             </List.Item>
-//           ))}
-//         </List>
-//       </Segment>
-//     )}
-//   </div>
-// );
-
 export default class PlaceInput extends Component {
   render() {
     const {
