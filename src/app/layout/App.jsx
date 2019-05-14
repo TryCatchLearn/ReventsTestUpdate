@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Container } from 'semantic-ui-react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import EventDashboard from '../../features/event/EventDashboard/EventDashboard';
 import NavBar from '../../features/nav/NavBar/NavBar';
 import EventDetailedPage from '../../features/event/EventDetailed/EventDetailedPage';
@@ -45,4 +45,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);

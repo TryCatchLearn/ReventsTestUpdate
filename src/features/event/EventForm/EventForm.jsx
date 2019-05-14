@@ -11,7 +11,7 @@ import {
   hasLengthGreaterThan
 } from 'revalidate';
 import { Form, Segment, Button, Grid, Header } from 'semantic-ui-react';
-import { createEvent, updateEvent } from '../eventActions';
+import { createEvent, updateEvent, cancelToggle } from '../eventActions';
 import TextInput from '../../../app/common/form/TextInput';
 import TextArea from '../../../app/common/form/TextArea';
 import SelectInput from '../../../app/common/form/SelectInput';
@@ -19,20 +19,24 @@ import DateInput from '../../../app/common/form/DateInput';
 import PlaceInput from '../../../app/common/form/PlaceInput';
 
 const mapState = (state, ownProps) => {
+  const eventId = ownProps.match.params.id;
+
   let event = {};
 
-  if (state.firestore.ordered.events && state.firestore.ordered.events[0]) {
-    event = state.firestore.ordered.events[0];
+  if (eventId && state.firestore.ordered.events.length > 0) {
+    event = state.firestore.ordered.events.filter(event => event.id === eventId)[0];
   }
 
   return {
-    initialValues: event
+    initialValues: event,
+    event
   };
 };
 
 const actions = {
   createEvent,
-  updateEvent
+  updateEvent,
+  cancelToggle
 };
 
 const validate = combineValidators({
@@ -63,14 +67,14 @@ class EventForm extends Component {
     venueLatLng: {}
   };
 
- componentDidMount = async () => {
+  async componentDidMount() {
     const { firestore, match } = this.props;
-    let event = await firestore.get(`events/${match.params.id}`);
-    // if (event.exists) {
-    //   this.setState({
-    //     venueLatLng: event.data().venueLatLng
-    //   });
-    // }
+    await firestore.setListener(`events/${match.params.id}`);
+  }
+
+  async componentWillUnmount() {
+    const { firestore, match } = this.props;
+    await firestore.unsetListener(`events/${match.params.id}`);
   }
 
   handleCitySelect = selectedCity => {
@@ -101,8 +105,11 @@ class EventForm extends Component {
 
   handleFormSubmit = values => {
     values.venueLatLng = this.state.venueLatLng;
+    values.date = values.date.toDate();
     if (this.props.initialValues.id) {
-      console.log(values)
+      if (Object.keys(values.venueLatLng).length === 0) {
+        values.venueLatLng = this.props.event.venueLatLng;
+      }
       this.props.updateEvent(values);
       this.props.history.goBack();
     } else {
@@ -112,7 +119,7 @@ class EventForm extends Component {
   };
 
   render() {
-    const { invalid, submitting, pristine } = this.props;
+    const { invalid, submitting, pristine, event, cancelToggle } = this.props;
     return (
       <Grid>
         <Grid.Column width={10}>
@@ -179,6 +186,13 @@ class EventForm extends Component {
               <Button onClick={this.props.history.goBack} type='button'>
                 Cancel
               </Button>
+              <Button
+                onClick={() => cancelToggle(!event.cancelled, event.id)}
+                type='button'
+                color={event.cancelled ? 'green' : 'red'}
+                floated='right'
+                content={event.cancelled ? 'Reactivate event' : 'Cancel Event'}
+              />
             </Form>
           </Segment>
         </Grid.Column>
