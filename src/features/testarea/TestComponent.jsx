@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { incrementAsync, decrementAsync } from './testActions';
+import { incrementAsync, decrementAsync, testPermissions } from './testActions';
 import { openModal } from '../modals/modalActions';
 import { Button } from 'semantic-ui-react';
 import TestPlaceInput from './TestPlaceInput';
@@ -14,7 +14,8 @@ const mapState = state => ({
 const actions = {
   incrementAsync,
   decrementAsync,
-  openModal
+  openModal,
+  testPermissions
 };
 
 class TestComponent extends Component {
@@ -24,7 +25,8 @@ class TestComponent extends Component {
       decrementAsync,
       data,
       openModal,
-      loading
+      loading,
+      testPermissions
     } = this.props;
     return (
       <div>
@@ -46,6 +48,11 @@ class TestComponent extends Component {
           onClick={() => openModal('TestModal', { data: 42 })}
           color='teal'
           content='Open Modal'
+        />
+        <Button
+          onClick={testPermissions}
+          color='teal'
+          content='Test Permissions'
         />
         <TestPlaceInput />
         <br />

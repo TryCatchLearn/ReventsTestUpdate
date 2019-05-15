@@ -1,7 +1,6 @@
 import { FETCH_EVENTS } from './eventConstants';
 import { toastr } from 'react-redux-toastr';
-import { asyncActionStart, asyncActionFinish } from '../async/asyncActions';
-import { asyncActionError } from '../async/asyncReducer';
+import { asyncActionStart, asyncActionFinish, asyncActionError } from '../async/asyncActions';
 import { createNewEvent } from '../../app/common/util/helpers';
 import moment from 'moment';
 import firebase from '../../app/config/firebase';

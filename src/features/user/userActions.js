@@ -135,7 +135,6 @@ export const setMainPhoto = photo => async (dispatch, getState) => {
         });
       }
     }
-    console.log(batch);
     await batch.commit();
     dispatch(asyncActionFinish());
   } catch (error) {
@@ -179,7 +178,7 @@ export const goingToEvent = event => async (dispatch, getState) => {
     toastr.success('Success', 'You have signed up to event');
   } catch (error) {
     console.log(error);
-    dispatch(asyncActionError());
+    dispatch(asyncActionFinish());
     toastr.error('Oops', 'Problem signing up to event');
   }
 };
