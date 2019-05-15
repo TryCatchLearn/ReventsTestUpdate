@@ -5,6 +5,7 @@ import { asyncActionError } from '../async/asyncReducer';
 import { createNewEvent } from '../../app/common/util/helpers';
 import moment from 'moment';
 import firebase from '../../app/config/firebase';
+import { compareAsc } from 'date-fns';
 
 export const createEvent = event => {
   return async (dispatch, getState, { getFirebase, getFirestore }) => {
@@ -29,15 +30,47 @@ export const createEvent = event => {
 };
 
 export const updateEvent = event => {
-  return async (dispatch, getState, { getFirestore }) => {
-    const firestore = getFirestore();
+  return async (dispatch, getState) => {
+    dispatch(asyncActionStart());
+    const firestore = firebase.firestore();
     if (event.date !== getState().firestore.ordered.events[0].date) {
       event.date = moment(event.date).toDate();
     }
     try {
-      await firestore.update(`events/${event.id}`, event);
+      let eventDocRef = firestore.collection('events').doc(event.id);
+      let dateEqual = compareAsc(
+        getState().firestore.ordered.events[0].date.toDate(),
+        event.date
+      );
+      if (dateEqual !== 0) {
+        let batch = firestore.batch();
+        await batch.update(eventDocRef, event);
+
+        let eventAttendeeRef = firestore.collection('event_attendee');
+        let eventAttendeeQuery = await eventAttendeeRef.where(
+          'eventId',
+          '==',
+          event.id
+        );
+        let eventAttendeeQuerySnap = await eventAttendeeQuery.get();
+
+        for (let i = 0; i < eventAttendeeQuerySnap.docs.length; i++) {
+          let eventAttendeeDocRef = await firestore
+            .collection('event_attendee')
+            .doc(eventAttendeeQuerySnap.docs[i].id);
+
+          await batch.update(eventAttendeeDocRef, {
+            eventDate: event.date
+          })
+        }
+        await batch.commit();
+      } else {
+        await eventDocRef.update(event);
+      }
+      dispatch(asyncActionFinish());
       toastr.success('Success!', 'Event has been updated');
     } catch (error) {
+      dispatch(asyncActionError());
       toastr.error('Oops', 'Something went wrong');
     }
   };
@@ -114,23 +147,26 @@ export const getEventsForDashboard = lastEvent => async (
   }
 };
 
-export const addEventComment = (eventId, values, parentId) =>  
- async (dispatch, getState, {getFirebase}) => {
-   const firebase = getFirebase();
-   const profile = getState().firebase.profile;
-   const user = firebase.auth().currentUser;
-   let newComment = {
-     parentId: parentId,
-     displayName: profile.displayName,
-     photoURL: profile.photoURL || '/assets/user.png',
-     uid: user.uid,
-     text: values.comment,
-     date: Date.now()
-   }
-   try {
-    await firebase.push(`event_chat/${eventId}`, newComment)
-   } catch (error) {
-     console.log(error);
-     toastr.error('Oops', 'Problem adding comment')
-   }
- }
+export const addEventComment = (eventId, values, parentId) => async (
+  dispatch,
+  getState,
+  { getFirebase }
+) => {
+  const firebase = getFirebase();
+  const profile = getState().firebase.profile;
+  const user = firebase.auth().currentUser;
+  let newComment = {
+    parentId: parentId,
+    displayName: profile.displayName,
+    photoURL: profile.photoURL || '/assets/user.png',
+    uid: user.uid,
+    text: values.comment,
+    date: Date.now()
+  };
+  try {
+    await firebase.push(`event_chat/${eventId}`, newComment);
+  } catch (error) {
+    console.log(error);
+    toastr.error('Oops', 'Problem adding comment');
+  }
+};

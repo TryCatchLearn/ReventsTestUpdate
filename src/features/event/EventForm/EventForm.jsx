@@ -24,12 +24,15 @@ const mapState = (state, ownProps) => {
   let event = {};
 
   if (eventId && state.firestore.ordered.events.length > 0) {
-    event = state.firestore.ordered.events.filter(event => event.id === eventId)[0];
+    event = state.firestore.ordered.events.filter(
+      event => event.id === eventId
+    )[0];
   }
 
   return {
     initialValues: event,
-    event
+    event,
+    loading: state.async.loading
   };
 };
 
@@ -103,14 +106,14 @@ class EventForm extends Component {
       });
   };
 
-  handleFormSubmit = values => {
+  handleFormSubmit = async values => {
     values.venueLatLng = this.state.venueLatLng;
     values.date = values.date.toDate();
     if (this.props.initialValues.id) {
       if (Object.keys(values.venueLatLng).length === 0) {
         values.venueLatLng = this.props.event.venueLatLng;
       }
-      this.props.updateEvent(values);
+      await this.props.updateEvent(values);
       this.props.history.goBack();
     } else {
       this.props.createEvent(values);
@@ -119,7 +122,14 @@ class EventForm extends Component {
   };
 
   render() {
-    const { invalid, submitting, pristine, event, cancelToggle } = this.props;
+    const {
+      invalid,
+      submitting,
+      pristine,
+      event,
+      cancelToggle,
+      loading
+    } = this.props;
     return (
       <Grid>
         <Grid.Column width={10}>
@@ -178,12 +188,17 @@ class EventForm extends Component {
               />
               <Button
                 disabled={invalid || submitting || pristine}
+                loading={loading}
                 positive
                 type='submit'
               >
                 Submit
               </Button>
-              <Button onClick={this.props.history.goBack} type='button'>
+              <Button
+                disabled={loading}
+                onClick={this.props.history.goBack}
+                type='button'
+              >
                 Cancel
               </Button>
               <Button

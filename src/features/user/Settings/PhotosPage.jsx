@@ -64,21 +64,21 @@ class PhotosPage extends Component {
     }
   };
 
-  handlePhotoDelete = (photo) => async () => {
-    try  {
+  handlePhotoDelete = photo => async () => {
+    try {
       this.props.deletePhoto(photo);
     } catch (error) {
-      toastr.error('Oops', error.message)
+      toastr.error('Oops', error.message);
     }
-  }
+  };
 
-  handleSetMainPhoto = (photo) => async () => {
+  handleSetMainPhoto = photo => async () => {
     try {
       this.props.setMainPhoto(photo);
     } catch (error) {
       toastr.error('Oops', error.message);
     }
-  }
+  };
 
   cancelCrop = () => {
     this.setState({
@@ -115,8 +115,8 @@ class PhotosPage extends Component {
     let filteredPhotos;
     if (photos) {
       filteredPhotos = photos.filter(photo => {
-        return photo.url !== profile.photoURL
-      })
+        return photo.url !== profile.photoURL;
+      });
     }
     return (
       <Segment>
@@ -204,15 +204,24 @@ class PhotosPage extends Component {
               <Card key={photo.id}>
                 <Image src={photo.url} />
                 <div className='ui two buttons'>
-                  <Button onClick={this.handleSetMainPhoto(photo)} basic color='green'>
+                  <Button
+                    loading={loading}
+                    onClick={this.handleSetMainPhoto(photo)}
+                    basic
+                    color='green'
+                  >
                     Main
                   </Button>
-                  <Button onClick={this.handlePhotoDelete(photo)} basic icon='trash' color='red' />
+                  <Button
+                    onClick={this.handlePhotoDelete(photo)}
+                    basic
+                    icon='trash'
+                    color='red'
+                  />
                 </div>
               </Card>
             ))}
         </Card.Group>
-
       </Segment>
     );
   }

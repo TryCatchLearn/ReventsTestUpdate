@@ -21,7 +21,8 @@ const EventDetailedHeader = ({
   isHost,
   isGoing,
   goingToEvent,
-  cancelGoingToEvent
+  cancelGoingToEvent,
+  loading
 }) => {
   let eventDate;
   if (event.date) {
@@ -63,7 +64,7 @@ const EventDetailedHeader = ({
                 Cancel My Place
               </Button>
             ) : (
-              <Button onClick={() => goingToEvent(event)} color='teal'>
+              <Button loading={loading} onClick={() => goingToEvent(event)} color='teal'>
                 JOIN THIS EVENT
               </Button>
             )}
