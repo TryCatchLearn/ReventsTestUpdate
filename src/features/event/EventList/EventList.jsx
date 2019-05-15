@@ -13,6 +13,7 @@ class EventList extends Component {
             loadMore={getNextEvents}
             hasMore={!loading && moreEvents}
             initialLoad={false}
+            threshold={500}
           >
             {events &&
               events.map(event => (

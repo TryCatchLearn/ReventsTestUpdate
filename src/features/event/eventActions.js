@@ -83,13 +83,13 @@ export const getEventsForDashboard = lastEvent => async (
 
     lastEvent
       ? (query = eventsRef
-          .where('date', '>=', today)
-          .orderBy('date')
+          .where('date', '>', today)
+          // .orderBy('title')
           .startAfter(startAfter)
           .limit(2))
       : (query = eventsRef
-          .where('date', '>=', today)
-          .orderBy('date')
+          .where('date', '>', today)
+          // .orderBy('title')
           .limit(2));
 
     let querySnap = await query.get();

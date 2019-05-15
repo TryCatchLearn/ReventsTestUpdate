@@ -44,7 +44,14 @@ class EventDashboard extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.setState({
+      loadedEvents: []
+    })
+  }
+
   componentDidUpdate = prevProps => {
+    console.log(prevProps.events);
     if (this.props.events !== prevProps.events) {
       this.setState({
         loadedEvents: [...this.state.loadedEvents, ...this.props.events]

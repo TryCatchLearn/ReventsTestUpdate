@@ -219,3 +219,43 @@ export const getUserEvents = (userUid, activeTab) => async (
     dispatch(asyncActionError());
   }
 };
+
+export const followUser = userToFollow => 
+  async (dispatch, getState, {getFirebase, getFirestore}) => {
+    const firebase = getFirebase();
+    const firestore = getFirestore();
+    const user = firebase.auth().currentUser;
+    const following = {
+      photoURL: userToFollow.photoURL || '/assets/user.png',
+      city: userToFollow.city || 'unknown city',
+      displayName: userToFollow.displayName
+    };
+    try {
+      await firestore.set(
+        {
+          collection: 'users',
+          doc: user.uid,
+          subcollections: [{collection: 'following', doc: userToFollow.id}]
+        },
+        following
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+export const unfollowUser = (userToUnfollow) =>
+  async (dispatch, getState, {getFirebase, getFirestore}) => {
+    const firebase = getFirebase();
+    const firestore = getFirestore();
+    const user = firebase.auth().currentUser;
+    try {
+      await firestore.delete({
+        collection: 'users',
+        doc: user.uid,
+        subcollections: [{collection: 'following', doc: userToUnfollow.id}]
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
