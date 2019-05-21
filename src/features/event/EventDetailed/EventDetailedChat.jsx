@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Segment, Comment, Header } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import EventDetailedChatForm from './EventDetailedChatForm';
-import { distanceInWords } from 'date-fns';
+import { formatDistance } from 'date-fns';
 
 class EventDetailedChat extends Component {
   state = {
@@ -52,7 +52,7 @@ class EventDetailedChat extends Component {
                       {comment.displayName}
                     </Comment.Author>
                     <Comment.Metadata>
-                      <div>{distanceInWords(comment.date, Date.now())} ago</div>
+                      <div>{formatDistance(comment.date, Date.now())} ago</div>
                     </Comment.Metadata>
                     <Comment.Text>{comment.text}</Comment.Text>
                     <Comment.Actions>
@@ -89,7 +89,7 @@ class EventDetailedChat extends Component {
                             </Comment.Author>
                             <Comment.Metadata>
                               <div>
-                                {distanceInWords(child.date, Date.now())} ago
+                                {formatDistance(child.date, Date.now())} ago
                               </div>
                             </Comment.Metadata>
                             <Comment.Text>{child.text}</Comment.Text>

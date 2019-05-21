@@ -40,8 +40,8 @@ class EventDetailedInfo extends Component {
             </Grid.Column>
             <Grid.Column width={15}>
               <span>
-                {format(eventDate, 'dddd Do MMM')} at{' '}
-                {format(eventDate, 'h:mm A')}
+                {format(eventDate, 'EEEE do LLL')} at{' '}
+                {format(eventDate, 'h:mm a')}
               </span>
             </Grid.Column>
           </Grid>

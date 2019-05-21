@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Feed } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+import {formatDistance} from 'date-fns';
 
 class EventActivityItem extends Component {
   renderSummary = activity => {
@@ -55,7 +55,7 @@ class EventActivityItem extends Component {
           <Feed.Summary>{this.renderSummary(activity)}</Feed.Summary>
           <Feed.Meta>
             <Feed.Date>
-              {distanceInWordsToNow(activity.timestamp.toDate())} ago
+              {formatDistance(activity.timestamp.toDate(), Date.now())} ago
             </Feed.Date>
           </Feed.Meta>
         </Feed.Content>

@@ -52,7 +52,8 @@ const validate = combineValidators({
     })
   )(),
   city: isRequired('city'),
-  venue: isRequired('venue')
+  venue: isRequired('venue'),
+  date: isRequired('date')
 });
 
 const category = [
@@ -108,7 +109,7 @@ class EventForm extends Component {
 
   handleFormSubmit = async values => {
     values.venueLatLng = this.state.venueLatLng;
-    values.date = values.date.toDate();
+    // values.date = values.date.toDate();
     if (this.props.initialValues.id) {
       if (Object.keys(values.venueLatLng).length === 0) {
         values.venueLatLng = this.props.event.venueLatLng;
@@ -181,7 +182,7 @@ class EventForm extends Component {
                 name='date'
                 type='text'
                 component={DateInput}
-                dateFormat='YYYY-MM-DD HH:mm'
+                dateFormat='do LLL yyyy h:mm a'
                 timeFormat='HH:mm'
                 showTimeSelect
                 placeholder='Event date'

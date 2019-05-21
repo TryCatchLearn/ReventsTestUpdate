@@ -5,7 +5,7 @@ import { Form, List, Segment, Label } from 'semantic-ui-react';
 export default class PlaceInput extends Component {
   render() {
     const {
-      input,
+      input: {value, onChange, onBlur},
       width,
       onSelect,
       options,
@@ -15,8 +15,8 @@ export default class PlaceInput extends Component {
     return (
       
         <PlacesAutoComplete
-          value={input.value}
-          onChange={input.onChange}
+          value={value}
+          onChange={onChange}
           searchOptions={options}
           onSelect={onSelect}
         >
@@ -30,7 +30,7 @@ export default class PlaceInput extends Component {
              
               <input
                 placeholder={placeholder}
-                {...getInputProps({placeholder})}
+                {...getInputProps({placeholder, onBlur})}
               />
               {touched && error && <Label basic color='red'>{error}</Label>}
               {suggestions.length > 0 && (
