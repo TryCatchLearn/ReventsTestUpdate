@@ -34,9 +34,9 @@ export default class PlaceInput extends Component {
               />
               {touched && error && <Label basic color='red'>{error}</Label>}
               {suggestions.length > 0 && (
-                <Segment style={{marginTop: 0}}>
+                <Segment style={{marginTop: 0, position: 'absolute', zIndex: 1000, width: '100%'}}>
                   {loading && <div>Loading...</div>}
-                  <List selection>
+                  <List fluid selection>
                     {suggestions.map(suggestion => (
                       <List.Item {...getSuggestionItemProps(suggestion)}>
                         <List.Header>

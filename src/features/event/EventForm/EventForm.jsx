@@ -162,7 +162,7 @@ class EventForm extends Component {
                 name='city'
                 type='text'
                 component={PlaceInput}
-                options={{ typs: ['(cities)'] }}
+                options={{ types: ['(cities)'] }}
                 placeholder='Event city'
                 onSelect={this.handleCitySelect}
               />

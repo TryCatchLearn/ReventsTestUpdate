@@ -1,5 +1,5 @@
 import React from 'react';
-import { Segment, List, Item, Label } from 'semantic-ui-react';
+import { Segment, Item, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 const EventDetailedSidebar = ({ attendees }) => {
@@ -17,7 +17,7 @@ const EventDetailedSidebar = ({ attendees }) => {
         {attendees && attendees.length === 1 ? 'Person' : 'People'} going
       </Segment>
       <Segment attached>
-        <List relaxed divided>
+        <Item.Group divided>
           {attendees &&
             attendees.map((attendee, index) => (
               <Item key={index} style={{ position: 'relative' }}>
@@ -40,7 +40,7 @@ const EventDetailedSidebar = ({ attendees }) => {
                 </Item.Content>
               </Item>
             ))}
-        </List>
+        </Item.Group>
       </Segment>
     </div>
   );
